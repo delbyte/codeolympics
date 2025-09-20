@@ -60,7 +60,7 @@ export function ChallengeVisualizer({ userEmail, discordUsername }: ChallengeVis
       </div>
 
       <div className="w-full max-w-4xl relative">
-        <CubeAnimation isAnimating={isAnimating} />
+        <CubeAnimation isAnimating={isAnimating} playCount={playCount} />
       </div>
 
       {!challenge && !isAnimating && (

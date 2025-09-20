@@ -133,7 +133,7 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
               ) : (
                 <Button
                   onClick={handleAcceptCombo}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-nohemi font-bold py-4 rounded-lg border border-purple-500 shadow-lg"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-nohemi font-bold py-4 rounded-lg border border-purple-500 shadow-lg"
                 >
                   Accept Challenge (Final Attempt)
                 </Button>
