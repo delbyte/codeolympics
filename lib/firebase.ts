@@ -2,9 +2,6 @@
 import { initializeApp } from "firebase/app"
 import { getFirestore, collection, query, where, getDocs, updateDoc, increment } from "firebase/firestore"
 
-// DEV_BYPASS: Set this to true to bypass Firebase checks during development
-export const DEV_BYPASS = true
-
 // FIREBASE_COMM: Replace with your Firebase config from project settings
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,7 +15,7 @@ const firebaseConfig = {
 let app: any = null
 let db: any = null
 
-if (!DEV_BYPASS && firebaseConfig.apiKey) {
+if (firebaseConfig.apiKey) {
   try {
     // FIREBASE_COMM: Initialize Firebase app
     app = initializeApp(firebaseConfig)
@@ -33,7 +30,7 @@ export { db }
 
 // Helper functions for user data management
 export async function incrementPlayCount(userEmail: string) {
-  if (DEV_BYPASS || !db) return
+  if (!db) return
   
   try {
     // Find user document by email and increment playCount
@@ -52,7 +49,7 @@ export async function incrementPlayCount(userEmail: string) {
 }
 
 export async function getUserData(userEmail: string) {
-  if (DEV_BYPASS || !db) return null
+  if (!db) return null
   
   try {
     const q = query(collection(db, "participants"), where("email", "==", userEmail))
@@ -69,7 +66,7 @@ export async function getUserData(userEmail: string) {
 }
 
 export async function saveAcceptedCombo(userEmail: string, combo: any) {
-  if (DEV_BYPASS || !db) return
+  if (!db) return
   
   try {
     const q = query(collection(db, "participants"), where("email", "==", userEmail))
