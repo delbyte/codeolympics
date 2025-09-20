@@ -43,13 +43,6 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
 
   const isLastAttempt = playCount >= 3
 
-  // Challenge details for the acceptance modal
-  const challengeDetails = {
-    title: domain.title,
-    difficulty: isLastAttempt ? "Final Attempt" : `${4 - playCount} attempts remaining`,
-    timeLimit: budget.title
-  }
-
   return (
     <div className="w-full max-w-5xl space-y-8">
       <div className="text-center space-y-6">
@@ -186,7 +179,7 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
       {/* Challenge Accepted Modal */}
       <ChallengeAccepted
         isVisible={showAcceptedModal}
-        challengeDetails={challengeDetails}
+        challenge={challenge}
         onComplete={handleAcceptedComplete}
       />
     </div>
