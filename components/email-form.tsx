@@ -69,12 +69,12 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto border-2 border-white/20 bg-gradient-to-br from-blue-900/95 to-blue-800/95 backdrop-blur-sm shadow-2xl rounded-xl">
+    <Card className="w-full max-w-md mx-auto border-2 border-gray-200 bg-white shadow-2xl rounded-xl">
       <CardHeader className="text-center pb-6">
-        <CardTitle className="text-3xl font-bold text-white font-nohemi mb-2">Join the Challenge</CardTitle>
-        <CardDescription className="text-gray-200 font-nohemi text-base leading-relaxed">
+        <CardTitle className="text-3xl font-bold text-black font-nohemi mb-2">Join the Challenge</CardTitle>
+        <CardDescription className="text-gray-600 font-nohemi text-base leading-relaxed">
           Enter your email and Discord username to get your unique coding challenge
-          {DEV_BYPASS && <span className="block text-orange-400 font-bold mt-2 text-sm">[DEV_BYPASS MODE]</span>}
+          {DEV_BYPASS && <span className="block text-orange-600 font-bold mt-2 text-sm">[DEV_BYPASS MODE]</span>}
         </CardDescription>
       </CardHeader>
       <CardContent className="px-8 pb-8">
@@ -85,7 +85,7 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full border-2 border-white/30 bg-white/10 text-white placeholder:text-gray-300 focus:border-red-400 focus:bg-white/20 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
+            className="w-full border-2 border-gray-300 bg-white text-black placeholder:text-gray-500 focus:border-red-400 focus:bg-gray-50 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
           />
           <Input
             type="text"
@@ -93,9 +93,9 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
             value={discordUsername}
             onChange={(e) => setDiscordUsername(e.target.value)}
             required
-            className="w-full border-2 border-white/30 bg-white/10 text-white placeholder:text-gray-300 focus:border-red-400 focus:bg-white/20 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
+            className="w-full border-2 border-gray-300 bg-white text-black placeholder:text-gray-500 focus:border-red-400 focus:bg-gray-50 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
           />
-          {error && <p className="text-red-400 text-sm font-nohemi bg-red-900/20 border border-red-400/30 rounded-lg p-3">{error}</p>}
+          {error && <p className="text-red-400 text-sm font-nohemi bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-4 text-lg font-nohemi shadow-xl transform hover:scale-105 transition-all duration-200 rounded-lg border border-red-400/30"

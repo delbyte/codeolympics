@@ -51,11 +51,11 @@ export function ChallengeVisualizer({ userEmail, discordUsername }: ChallengeVis
   return (
     <div className="min-h-screen flex flex-col items-center justify-center space-y-12 py-12 px-4">
       <div className="text-center space-y-6">
-        <h1 className="text-6xl font-bold text-white font-nohemi drop-shadow-2xl">
+        <h1 className="text-6xl font-bold text-black font-nohemi drop-shadow-2xl">
           Welcome to Code Olympics!
         </h1>
-        <p className="text-xl text-gray-200 font-nohemi drop-shadow-lg max-w-2xl leading-relaxed">
-          Ready to discover your unique challenge, <span className="font-bold text-red-400 drop-shadow-md">{discordUsername || userEmail}</span>?
+        <p className="text-xl text-gray-600 font-nohemi drop-shadow-lg max-w-2xl leading-relaxed">
+          Ready to discover your unique challenge, <span className="font-bold text-red-600 drop-shadow-md">{discordUsername || userEmail}</span>?
         </p>
       </div>
 

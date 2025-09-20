@@ -11,27 +11,17 @@ interface CubeProps {
 }
 
 function CubeCell({ position, isHighlighted }: CubeProps) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime) * 0.15
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.15
-      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.2) * 0.1
-    }
-  })
-
-  // Brighter, more saturated colors
-  const colors = ["#ff4444", "#00ff88", "#4488ff", "#ffaa00", "#ff66cc", "#66ffcc", "#8844ff", "#ff8844"]
+  // Much brighter, more saturated colors
+  const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff8800", "#8800ff"]
   const color = colors[Math.floor(Math.random() * colors.length)]
 
   return (
-    <mesh ref={meshRef} position={position}>
+    <mesh position={position}>
       <boxGeometry args={[1.2, 1.2, 1.2]} />
       <meshStandardMaterial
         color={isHighlighted ? "#ffffff" : color}
         emissive={isHighlighted ? color : "#000000"}
-        emissiveIntensity={isHighlighted ? 1.2 : 0.3}
+        emissiveIntensity={isHighlighted ? 2.5 : 1.0}
         metalness={0.2}
         roughness={0.1}
       />
@@ -91,21 +81,21 @@ interface CubeAnimationProps {
 
 export function CubeAnimation({ isAnimating }: CubeAnimationProps) {
   return (
-    <div className="w-full h-96 bg-gradient-to-br from-blue-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl relative border border-white/10 shadow-2xl">
+    <div className="w-full h-[500px] bg-white rounded-2xl relative">
       <Canvas
         camera={{ position: [5, 5, 5], fov: 60 }}
         fallback={
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl border border-white/10">
+          <div className="w-full h-full flex items-center justify-center bg-white rounded-2xl">
             <div className="text-center space-y-3">
-              <div className="text-3xl font-bold text-white font-nohemi">🎲</div>
-              <div className="text-xl text-gray-200 font-nohemi">3D Cube Loading...</div>
+              <div className="text-3xl font-bold text-black font-nohemi">🎲</div>
+              <div className="text-xl text-gray-600 font-nohemi">3D Cube Loading...</div>
             </div>
           </div>
         }
       >
-        <ambientLight intensity={0.6} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} />
+        <ambientLight intensity={0.8} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <pointLight position={[-10, -10, -10]} intensity={0.8} />
 
         <AnimatedCube isAnimating={isAnimating} />
 
@@ -113,10 +103,10 @@ export function CubeAnimation({ isAnimating }: CubeAnimationProps) {
       </Canvas>
 
       {isAnimating && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm rounded-2xl z-10 border border-white/10">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-2xl z-10">
           <div className="text-center space-y-4">
-            <div className="text-3xl font-bold text-white font-nohemi drop-shadow-2xl">Generating Your Challenge...</div>
-            <div className="text-xl text-gray-200 font-nohemi drop-shadow-lg">The cube is selecting your unique combination!</div>
+            <div className="text-3xl font-bold text-black font-nohemi drop-shadow-2xl">Generating Your Challenge...</div>
+            <div className="text-xl text-gray-600 font-nohemi drop-shadow-lg">The cube is selecting your unique combination!</div>
           </div>
         </div>
       )}
