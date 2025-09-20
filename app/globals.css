@@ -207,7 +207,7 @@
 
 /* Removed font-disket - all text now uses Nohemi */
 
-/* DEV_BYPASS indicator styling */
+/* Custom styling */
 .dev-bypass-indicator {
   background: linear-gradient(45deg, #ff6b35, #f7931e);
   color: white;
