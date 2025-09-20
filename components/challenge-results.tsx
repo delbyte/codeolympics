@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { saveAcceptedCombo } from "@/lib/firebase"
+import { ChallengeAccepted } from "@/components/challenge-accepted"
 
 interface Challenge {
   constraint: string
@@ -19,6 +21,8 @@ interface ChallengeResultsProps {
 }
 
 export function ChallengeResults({ challenge, onNewChallenge, playCount, userEmail }: ChallengeResultsProps) {
+  const [showAcceptedModal, setShowAcceptedModal] = useState(false)
+
   const parseChallengePart = (part: string) => {
     const [title, description] = part.split(" → ")
     return { title, description }
@@ -30,10 +34,21 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
 
   const handleAcceptCombo = async () => {
     await saveAcceptedCombo(userEmail, challenge)
-    // Could add a success message or redirect here
+    setShowAcceptedModal(true)
+  }
+
+  const handleAcceptedComplete = () => {
+    setShowAcceptedModal(false)
   }
 
   const isLastAttempt = playCount >= 3
+
+  // Challenge details for the acceptance modal
+  const challengeDetails = {
+    title: domain.title,
+    difficulty: isLastAttempt ? "Final Attempt" : `${4 - playCount} attempts remaining`,
+    timeLimit: budget.title
+  }
 
   return (
     <div className="w-full max-w-5xl space-y-8">
@@ -167,6 +182,13 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
           </div>
         </CardContent>
       </Card>
+
+      {/* Challenge Accepted Modal */}
+      <ChallengeAccepted
+        isVisible={showAcceptedModal}
+        challengeDetails={challengeDetails}
+        onComplete={handleAcceptedComplete}
+      />
     </div>
   )
 }

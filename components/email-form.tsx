@@ -58,12 +58,13 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
         hasPlayed: false,
       })
 
+      // Keep loading state active during redirect
       onEmailSubmitted(email, discordUsername)
+      // Don't set isLoading to false here - let it stay true during redirect
     } catch (err) {
       console.error("Error saving email:", err)
       setError("Something went wrong. Please try again.")
-    } finally {
-      setIsLoading(false)
+      setIsLoading(false) // Only reset loading on error
     }
   }
 
@@ -149,10 +150,21 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
           )}
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-4 text-lg font-nohemi shadow-xl transform hover:scale-105 transition-all duration-200 rounded-lg border border-red-400/30"
+            className={`w-full font-bold py-4 text-lg font-nohemi shadow-xl rounded-lg border border-red-400/30 transition-all duration-200 ${
+              isLoading 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white transform hover:scale-105"
+            }`}
             disabled={isLoading}
           >
-            {isLoading ? "Checking..." : "Get My Challenge"}
+            {isLoading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Processing...</span>
+              </div>
+            ) : (
+              "Get My Challenge"
+            )}
           </Button>
         </form>
       </CardContent>

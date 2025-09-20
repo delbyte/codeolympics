@@ -3,10 +3,13 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { EmailForm } from "@/components/email-form"
+import { MobileLockout } from "@/components/mobile-lockout"
+import { useIsMobile } from "@/hooks/use-mobile"
 import Image from "next/image"
 
 export default function HomePage() {
   const router = useRouter()
+  const isMobile = useIsMobile()
 
   const handleEmailSubmitted = (email: string, username: string) => {
     // Redirect to challenge page with email and username as query params
@@ -15,6 +18,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white">
+      {/* Mobile lockout overlay */}
+      {isMobile && <MobileLockout />}
+
       {/* Decorative ribbons on edges - massive and mostly cut off */}
       <div className="absolute top-16 -left-64 z-10">
         <Image
