@@ -162,16 +162,22 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
       </Card>
 
       {/* Instructions */}
-      <Card className="border-2 border-amber-200 bg-white shadow-xl rounded-xl">
+      <Card className="border-4 border-black bg-red-500 shadow-xl rounded-xl">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-nohemi text-amber-700">Next Steps</CardTitle>
+          <CardTitle className="text-xl font-nohemi text-white">Important Next Steps</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3 font-nohemi text-gray-700 leading-relaxed">
-            <p>1. Save or screenshot your challenge details</p>
-            <p>2. Join the Discord community for support and updates</p>
-            <p>3. Start building your project following the constraints</p>
-            <p>4. Submit your solution during the competition period</p>
+          <div className="space-y-4 font-nohemi text-white leading-relaxed">
+            <div className="bg-black/20 p-4 rounded-lg border border-white/30">
+              <p className="text-lg font-bold text-yellow-200 mb-2">CRITICAL REQUIREMENT:</p>
+              <p className="text-white font-semibold">You MUST attach your challenge combination when submitting your project during the competition!</p>
+            </div>
+            <div className="space-y-2 text-white/90">
+              <p>1. Save or screenshot your challenge details above</p>
+              <p>2. Join the Discord community for support and updates</p>
+              <p>3. Start building your project following the constraints</p>
+              <p>4. <span className="font-bold text-yellow-200">Submit your solution WITH your challenge combination</span> during the competition period</p>
+            </div>
           </div>
         </CardContent>
       </Card>
