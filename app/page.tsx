@@ -1,115 +1,61 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { EmailForm } from "@/components/email-form"
 import { MobileLockout } from "@/components/mobile-lockout"
+import { SiteHeader } from "@/components/site-header"
+import { TesseractAnimation } from "@/components/tesseract-animation"
 import { useIsMobile } from "@/hooks/use-mobile"
-import Image from "next/image"
 
 export default function HomePage() {
   const router = useRouter()
   const isMobile = useIsMobile()
 
   const handleEmailSubmitted = (email: string, username: string) => {
-    // Redirect to challenge page with email and username as query params
     router.push(`/challenge?email=${encodeURIComponent(email)}&username=${encodeURIComponent(username)}`)
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* Mobile lockout overlay */}
+    <main className="min-h-screen overflow-hidden bg-surface-1 text-fg">
       {isMobile && <MobileLockout />}
+      <SiteHeader />
 
-      {/* Decorative ribbons on edges - massive and mostly cut off */}
-      <div className="absolute top-16 -left-64 z-10">
-        <Image
-          src="/images/ribbons.png"
-          alt="Decorative ribbon"
-          width={600}
-          height={360}
-          className=""
-        />
-      </div>
+      <section className="container relative grid min-h-[calc(100vh-88px)] items-center gap-10 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:py-16">
+        <div className="relative z-10">
+          <p className="mb-5 font-mono text-xs text-fg-muted/70 sm:text-sm">
+            <span className="text-gold/50">//</span> Code Olympics 2026
+            <span className="ml-1 inline-block h-[1em] w-[2px] align-middle bg-gold/60 animate-pulse" />
+          </p>
 
-      {/* Decorative circles - overlapping near bottom right */}
-      <div className="absolute bottom-20 right-32 z-10">
-        <Image
-          src="/images/codeolymics_circles.svg"
-          alt="Decorative circles"
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className="absolute bottom-8 right-16 z-10">
-        <Image
-          src="/images/codeolymics_circles.svg"
-          alt="Decorative circles"
-          width={160}
-          height={160}
-        />
-      </div>
-      <div className="absolute bottom-30 right-12 z-10">
-        <Image
-          src="/images/codeolymics_circles.svg"
-          alt="Decorative circles"
-          width={120}
-          height={120}
-        />
-      </div>
+          <h1 className="hero-title font-display text-5xl font-semibold leading-[1.05] drop-shadow-lg sm:text-6xl lg:text-7xl">
+            Generate Your 4D Challenge
+          </h1>
 
-      {/* Video Section */}
-      <section className="relative h-screen flex items-center justify-center bg-black">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          muted
-          playsInline
-          loop
-          preload="metadata"
-          onError={(e) => {
-            console.error('Video failed to load:', e);
-            // Fallback to a gradient background
-            e.currentTarget.style.display = 'none';
-            const fallback = document.createElement('div');
-            fallback.className = 'absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-black';
-            e.currentTarget.parentNode?.appendChild(fallback);
-          }}
-          onLoadStart={() => console.log('Video loading started')}
-          onCanPlay={() => console.log('Video can play')}
-          onPlay={() => console.log('Video started playing')}
-          onLoadedData={() => console.log('Video data loaded')}
-        >
-          <source
-            src="/codeolympics_vid.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20"></div>
-
-        <div className="relative z-10 text-center space-y-8 px-4">
-          <div className="space-y-6">
-            <h1 className="text-[129px] font-normal text-[#f73c13] font-nohemi leading-none" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000' }}>
-              Code Olympics
-            </h1>
-            <p className="text-3xl text-blue font-nohemi drop-shadow-lg">
-              <span className="bg-white text-black px-6 py-3 rounded-full drop-shadow-lg font-medium border border-white/30">
-                The Elite Constraint Programming Championship
-              </span>
-            </p>
-            <div className="flex items-center justify-center space-x-6 text-xl text-white font-nohemi drop-shadow-lg">
-              <span className="bg-white text-black px-6 py-3 rounded-full drop-shadow-lg font-medium border border-white/30">
-                3-Day Global Challenge
-              </span>
-              <span className="bg-white text-black px-6 py-3 rounded-full drop-shadow-lg font-medium border border-white/30">
-                Oct. 31 — Nov. 3, 2025
-              </span>
-            </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <span className="glass-pill-gold rounded-full px-4 py-1.5 font-mono text-xs uppercase tracking-[0.15em] text-gold">
+              4D Global Challenge
+            </span>
+            <span className="glass-pill rounded-full px-4 py-1.5 font-mono text-xs uppercase tracking-[0.15em] text-fg-muted">
+              Summer 2026
+            </span>
           </div>
 
+          <p className="mt-6 max-w-xl text-xl leading-relaxed text-fg-muted">
+            Four random constraints. One assigned language. Up to three spins before you commit.
+          </p>
+
+          <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {["Constraint", "Budget", "Domain", "Language"].map((item, index) => (
+              <div key={item} className="glass-card-ghost rounded-lg p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold">D{index + 1}</p>
+                <p className="mt-1 text-sm font-semibold text-fg">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 flex flex-col gap-6">
+          <TesseractAnimation isAnimating={false} playCount={0} />
           <EmailForm onEmailSubmitted={handleEmailSubmitted} />
         </div>
       </section>

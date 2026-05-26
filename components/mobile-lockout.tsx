@@ -1,76 +1,32 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Monitor } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 
-interface MobileLockoutProps {
-  // No props needed - component handles visibility internally
-}
-
-export function MobileLockout({}: MobileLockoutProps) {
+export function MobileLockout() {
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-lg flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-2 border-red-200 bg-white shadow-2xl rounded-xl relative overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute -top-10 -right-10 opacity-20">
-          <Image
-            src="/images/codeolymics_circles.svg"
-            alt="Decorative circles"
-            width={120}
-            height={120}
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-0/85 p-4 text-fg backdrop-blur-xl">
+      <section className="glass-card-featured w-full max-w-md rounded-lg p-6 text-center">
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+          <Monitor className="size-7" />
         </div>
-        <div className="absolute -bottom-8 -left-8 opacity-15">
-          <Image
-            src="/images/codeolymics_circles.svg"
-            alt="Decorative circles"
-            width={80}
-            height={80}
-          />
+        <p className="mt-5 font-mono text-xs uppercase tracking-[0.2em] text-gold">Desktop required</p>
+        <h2 className="mt-3 font-display text-2xl font-semibold text-fg">Use a larger screen</h2>
+        <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+          The tesseract generator is designed for the full Code Olympics desktop experience.
+        </p>
+
+        <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.03] p-4 text-left text-sm text-fg-muted">
+          <p>A laptop or desktop browser gives you enough room to inspect and save your 4D challenge.</p>
         </div>
 
-        <CardHeader className="text-center pb-6 relative z-10">
-          <div className="mb-4">
-            <div className="text-6xl mb-4">💻</div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-red-600 font-nohemi mb-2">
-            Desktop Required
-          </CardTitle>
-          <CardDescription className="text-gray-600 font-nohemi text-base leading-relaxed">
-            Code Olympics is designed for the full coding experience
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="px-8 pb-8 relative z-10">
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <p className="text-gray-700 font-nohemi text-sm leading-relaxed">
-                To participate in the Code Olympics challenge, please access this website from a laptop or desktop computer.
-              </p>
-              <p className="text-gray-600 font-nohemi text-xs">
-                The coding challenges and interface are optimized for larger screens to ensure the best experience.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <h3 className="font-semibold text-gray-800 font-nohemi text-sm mb-2">What you'll need:</h3>
-              <ul className="text-xs text-gray-600 font-nohemi space-y-1">
-                <li>• A laptop or desktop computer</li>
-                <li>• Modern web browser (Chrome, Firefox, Safari)</li>
-                <li>• Stable internet connection</li>
-              </ul>
-            </div>
-
-            <Button
-              onClick={() => window.location.reload()}
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 text-sm font-nohemi shadow-lg transition-all duration-200 rounded-lg"
-            >
-              Refresh Page
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        <Button
+          onClick={() => window.location.reload()}
+          className="mt-6 h-11 w-full rounded-full bg-gold font-bold text-surface-0 hover:bg-gold-light"
+        >
+          Refresh Page
+        </Button>
+      </section>
     </div>
   )
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { ChallengeVisualizer } from "@/components/challenge-visualizer"
-import Image from "next/image"
+import { SiteHeader } from "@/components/site-header"
 
 export default function ChallengePage() {
   const searchParams = useSearchParams()
@@ -12,12 +12,11 @@ export default function ChallengePage() {
   const [discordUsername, setDiscordUsername] = useState<string | null>(null)
 
   useEffect(() => {
-    const email = searchParams.get('email')
-    const username = searchParams.get('username')
+    const email = searchParams.get("email")
+    const username = searchParams.get("username")
 
     if (!email) {
-      // Redirect to home if no email provided
-      router.push('/')
+      router.push("/")
       return
     }
 
@@ -27,38 +26,19 @@ export default function ChallengePage() {
 
   if (!userEmail) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Loading...</p>
+      <main className="min-h-screen bg-surface-1 text-fg">
+        <SiteHeader />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="glass-pill rounded-full px-5 py-2 font-mono text-sm text-fg-muted">Loading generator</div>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-white relative">
-      <div className="absolute top-16 -left-64 z-10">
-        <Image
-          src="/images/ribbons.png"
-          alt="Decorative ribbon"
-          width={600}
-          height={360}
-          className=""
-        />
-      </div>
-      <div className="absolute top-120 -right-48 z-10">
-        <Image
-          src="/images/ribbons.png"
-          alt="Decorative ribbon"
-          width={600}
-          height={360}
-          className="transform scale-x-[-1]"
-        />
-      </div>
-
-      <div className="container mx-auto px-4 py-16">
-        <ChallengeVisualizer userEmail={userEmail} discordUsername={discordUsername} />
-      </div>
+    <main className="min-h-screen bg-surface-1 text-fg">
+      <SiteHeader />
+      <ChallengeVisualizer userEmail={userEmail} discordUsername={discordUsername} />
     </main>
   )
 }

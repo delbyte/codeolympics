@@ -1,17 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { CheckCircle2, Clipboard, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { ChallengeDimensionCard } from "@/components/challenge-dimension-card"
+import { parseChallengePart, type Challenge } from "@/lib/challenge-data"
 import { saveAcceptedCombo } from "@/lib/firebase"
 import { ChallengeAccepted } from "@/components/challenge-accepted"
-
-interface Challenge {
-  constraint: string
-  budget: string
-  domain: string
-}
 
 interface ChallengeResultsProps {
   challenge: Challenge
@@ -22,171 +17,131 @@ interface ChallengeResultsProps {
 
 export function ChallengeResults({ challenge, onNewChallenge, playCount, userEmail }: ChallengeResultsProps) {
   const [showAcceptedModal, setShowAcceptedModal] = useState(false)
-
-  const parseChallengePart = (part: string) => {
-    const [title, description] = part.split(" → ")
-    return { title, description }
-  }
-
+  const [copyLabel, setCopyLabel] = useState("Copy Details")
   const constraint = parseChallengePart(challenge.constraint)
   const budget = parseChallengePart(challenge.budget)
   const domain = parseChallengePart(challenge.domain)
+  const language = parseChallengePart(challenge.language)
+  const isLastAttempt = playCount >= 3
 
   const handleAcceptCombo = async () => {
     await saveAcceptedCombo(userEmail, challenge)
     setShowAcceptedModal(true)
   }
 
-  const handleAcceptedComplete = () => {
-    setShowAcceptedModal(false)
+  const handleCopy = async () => {
+    const challengeText = [
+      "Code Olympics 2026 Challenge",
+      "",
+      `Core Constraint: ${challenge.constraint}`,
+      `Line Budget: ${challenge.budget}`,
+      `Project Domain: ${challenge.domain}`,
+      `Language: ${challenge.language}`,
+    ].join("\n")
+
+    await navigator.clipboard.writeText(challengeText)
+    setCopyLabel("Copied")
+    window.setTimeout(() => setCopyLabel("Copy Details"), 1600)
   }
 
-  const isLastAttempt = playCount >= 3
-
   return (
-    <div className="w-full max-w-5xl space-y-8">
-      <div className="text-center space-y-6">
-        <h2 className="text-4xl font-bold text-gray-900 font-nohemi">Your Code Olympics Challenge</h2>
-        <p className="text-xl text-gray-700 font-nohemi">Here's your unique combination to build for the hackathon!</p>
+    <div className="mx-auto w-full max-w-6xl space-y-8">
+      <div className="text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold">Coordinates locked</p>
+        <h2 className="mt-3 font-display text-3xl font-semibold text-fg sm:text-4xl">
+          Your 4D Code Olympics Challenge
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-fg-muted">
+          Build this exact combination for the hackathon. The language is part of the constraint.
+        </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        {/* Core Constraint */}
-        <Card className="border-2 border-red-200 bg-white shadow-xl rounded-xl">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-nohemi text-red-600">Core Constraint</CardTitle>
-              <Badge className="bg-red-100 text-red-800 border border-red-200 font-nohemi">
-                Dimension 1
-              </Badge>
-            </div>
-            <CardDescription className="font-nohemi text-gray-600">What you can't use</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <h3 className="font-bold text-red-700 font-nohemi text-lg">{constraint.title}</h3>
-              <p className="text-sm text-gray-700 font-nohemi leading-relaxed">{constraint.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Line Budget */}
-        <Card className="border-2 border-blue-200 bg-white shadow-xl rounded-xl">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-nohemi text-blue-600">Line Budget</CardTitle>
-              <Badge className="bg-blue-100 text-blue-800 border border-blue-200 font-nohemi">
-                Dimension 2
-              </Badge>
-            </div>
-            <CardDescription className="font-nohemi text-gray-600">How much you can write</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <h3 className="font-bold text-blue-700 font-nohemi text-lg">{budget.title}</h3>
-              <p className="text-sm text-gray-700 font-nohemi leading-relaxed">{budget.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Project Domain */}
-        <Card className="border-2 border-green-200 bg-white shadow-xl rounded-xl">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-nohemi text-green-600">Project Domain</CardTitle>
-              <Badge className="bg-green-100 text-green-800 border border-green-200 font-nohemi">
-                Dimension 3
-              </Badge>
-            </div>
-            <CardDescription className="font-nohemi text-gray-600">What you build</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <h3 className="font-bold text-green-700 font-nohemi text-lg">{domain.title}</h3>
-              <p className="text-sm text-gray-700 font-nohemi leading-relaxed">{domain.description}</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <ChallengeDimensionCard
+          dimension={1}
+          label="Core Constraint"
+          tagline="What you cannot use"
+          value={challenge.constraint}
+          accent="blue"
+        />
+        <ChallengeDimensionCard
+          dimension={2}
+          label="Line Budget"
+          tagline="How much you can write"
+          value={challenge.budget}
+          accent="gold"
+        />
+        <ChallengeDimensionCard
+          dimension={3}
+          label="Project Domain"
+          tagline="What you build"
+          value={challenge.domain}
+          accent="green"
+        />
+        <ChallengeDimensionCard
+          dimension={4}
+          label="Language"
+          tagline="What you write it in"
+          value={challenge.language}
+          accent="red"
+        />
       </div>
 
-      {/* Challenge Summary */}
-      <Card className="border-2 border-gray-200 bg-white shadow-xl rounded-xl">
-        <CardHeader className="pb-6">
-          <CardTitle className="text-2xl font-nohemi text-gray-900">Your Challenge Summary</CardTitle>
-          <CardDescription className="font-nohemi text-gray-600 text-lg">
-            Build this combination for the Code Olympics hackathon
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="p-6 bg-gray-50 rounded-xl border border-gray-200">
-              <p className="text-lg font-nohemi text-gray-900 leading-relaxed">
-                Create a <span className="font-bold text-green-600">{domain.title.toLowerCase()}</span> project with the <span className="font-bold text-blue-600">{budget.title.toLowerCase()}</span> limit while following the <span className="font-bold text-red-600">{constraint.title.toLowerCase()}</span> constraint.
-              </p>
-            </div>
+      <section className="glass-card-featured rounded-lg p-6">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-gold">Challenge summary</p>
+        <p className="mt-4 text-lg leading-relaxed text-fg">
+          Create a <span className="font-semibold text-[#8ff0b8]">{domain.title.toLowerCase()}</span> in{" "}
+          <span className="font-semibold text-[#ff97a6]">{language.title}</span> with the{" "}
+          <span className="font-semibold text-gold-light">{budget.title.toLowerCase()}</span> limit while following the{" "}
+          <span className="font-semibold text-[#8ccfff]">{constraint.title.toLowerCase()}</span> constraint.
+        </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              {!isLastAttempt ? (
-                <>
-                  <Button onClick={onNewChallenge} variant="outline" className="flex-1 font-nohemi bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 py-3">
-                    Decline & Try Again ({3 - playCount} attempts left)
-                  </Button>
-                  <Button
-                    onClick={handleAcceptCombo}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-nohemi font-bold py-3 rounded-lg border border-green-500 shadow-lg"
-                  >
-                    Accept This Challenge
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  onClick={handleAcceptCombo}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-nohemi font-bold py-4 rounded-lg border border-purple-500 shadow-lg"
-                >
-                  Accept Challenge (Final Attempt)
-                </Button>
-              )}
-              <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-nohemi font-bold py-3 rounded-lg border border-blue-500 shadow-lg"
-                onClick={() => {
-                  // Copy challenge to clipboard
-                  const challengeText = `Code Olympics Challenge:\n\nCore Constraint: ${challenge.constraint}\nLine Budget: ${challenge.budget}\nProject Domain: ${challenge.domain}`
-                  navigator.clipboard.writeText(challengeText)
-                }}
-              >
-                Copy Challenge Details
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          {!isLastAttempt && (
+            <Button
+              onClick={onNewChallenge}
+              variant="outline"
+              className="h-11 flex-1 rounded-full border-white/10 bg-white/[0.03] text-fg hover:bg-white/[0.07] hover:text-fg"
+            >
+              <RotateCcw className="size-4" />
+              Try Again ({3 - playCount} left)
+            </Button>
+          )}
 
-      {/* Instructions */}
-      <Card className="border-4 border-black bg-red-500 shadow-xl rounded-xl">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-nohemi text-white">Important Next Steps</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4 font-nohemi text-white leading-relaxed">
-            <div className="bg-black/20 p-4 rounded-lg border border-white/30">
-              <p className="text-lg font-bold text-yellow-200 mb-2">CRITICAL REQUIREMENT:</p>
-              <p className="text-white font-semibold">You MUST attach your challenge combination when submitting your project during the competition!</p>
-            </div>
-            <div className="space-y-2 text-white/90">
-              <p>1. Save or screenshot your challenge details above</p>
-              <p>2. Join the Discord community for support and updates</p>
-              <p>3. Start building your project following the constraints</p>
-              <p>4. <span className="font-bold text-yellow-200">Submit your solution WITH your challenge combination</span> during the competition period</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <Button
+            onClick={handleAcceptCombo}
+            className="h-11 flex-1 rounded-full bg-gold font-bold text-surface-0 hover:bg-gold-light"
+          >
+            <CheckCircle2 className="size-4" />
+            {isLastAttempt ? "Accept Final Challenge" : "Accept Challenge"}
+          </Button>
 
-      {/* Challenge Accepted Modal */}
+          <Button
+            onClick={handleCopy}
+            variant="outline"
+            className="h-11 flex-1 rounded-full border-white/10 bg-white/[0.03] text-fg hover:bg-white/[0.07] hover:text-fg"
+          >
+            <Clipboard className="size-4" />
+            {copyLabel}
+          </Button>
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-danger/30 bg-danger/10 p-6">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#ff97a6]">Important next step</p>
+        <p className="mt-3 text-lg font-semibold text-fg">
+          Attach this full 4D combination when submitting your project.
+        </p>
+        <div className="mt-4 grid gap-3 text-sm text-fg-muted sm:grid-cols-2">
+          <p>Save the constraint, budget, domain, and language together.</p>
+          <p>Join Discord for competition updates, support, and submission reminders.</p>
+        </div>
+      </section>
+
       <ChallengeAccepted
         isVisible={showAcceptedModal}
         challenge={challenge}
-        onComplete={handleAcceptedComplete}
+        onComplete={() => setShowAcceptedModal(false)}
       />
     </div>
   )

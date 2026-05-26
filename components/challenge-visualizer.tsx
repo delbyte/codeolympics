@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { CubeAnimation } from "./cube-animation"
+import { Sparkles } from "lucide-react"
+import { TesseractAnimation } from "./tesseract-animation"
 import { ChallengeResults } from "./challenge-results"
-import { generateRandomChallenge } from "@/lib/challenge-data"
+import { generateRandomChallenge, type Challenge } from "@/lib/challenge-data"
 import { Button } from "@/components/ui/button"
 import { incrementPlayCount, getUserData } from "@/lib/firebase"
 
@@ -14,67 +15,70 @@ interface ChallengeVisualizerProps {
 
 export function ChallengeVisualizer({ userEmail, discordUsername }: ChallengeVisualizerProps) {
   const [isAnimating, setIsAnimating] = useState(false)
-  const [challenge, setChallenge] = useState<{
-    constraint: string
-    budget: string
-    domain: string
-  } | null>(null)
+  const [challenge, setChallenge] = useState<Challenge | null>(null)
   const [playCount, setPlayCount] = useState(0)
-  const [userData, setUserData] = useState<any>(null)
+  const displayName = discordUsername || userEmail
 
   useEffect(() => {
-    // Load user data when component mounts
     const loadUserData = async () => {
       const data = await getUserData(userEmail)
-      setUserData(data)
       setPlayCount(data?.playCount || 0)
     }
+
     loadUserData()
   }, [userEmail])
 
   const handleGenerateChallenge = async () => {
-    // Increment play count in database
     await incrementPlayCount(userEmail)
-    setPlayCount(prev => prev + 1)
-    
+    setPlayCount((previous) => previous + 1)
     setIsAnimating(true)
     setChallenge(null)
 
-    // Simulate animation duration
-    setTimeout(() => {
-      const newChallenge = generateRandomChallenge()
-      setChallenge(newChallenge)
+    window.setTimeout(() => {
+      setChallenge(generateRandomChallenge())
       setIsAnimating(false)
-    }, 3000) // 3 second animation
+    }, 3000)
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center space-y-12 py-12 px-4">
-      <div className="text-center space-y-6">
-        <h1 className="text-6xl font-bold text-black font-nohemi drop-shadow-2xl">
-          Welcome to Code Olympics!
-        </h1>
-        <p className="text-xl text-gray-600 font-nohemi drop-shadow-lg max-w-2xl leading-relaxed">
-          Ready to discover your unique challenge, <span className="font-bold text-red-600 drop-shadow-md">{discordUsername || userEmail}</span>?
-        </p>
-      </div>
+    <div className="mx-auto flex min-h-[calc(100vh-112px)] w-full max-w-6xl flex-col gap-10 px-4 py-12 sm:px-6 lg:py-16">
+      <div className="grid items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold">4D challenge system</p>
+          <h1 className="hero-title mt-4 font-display text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
+            Welcome, {displayName}
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-fg-muted">
+            The tesseract selects a core constraint, line budget, project domain, and assigned language.
+          </p>
 
-      <div className="w-full max-w-4xl relative">
-        <CubeAnimation isAnimating={isAnimating} playCount={playCount} />
+          <div className="mt-6 flex flex-wrap gap-3">
+            {["Core", "Budget", "Domain", "Language"].map((label, index) => (
+              <span key={label} className="glass-pill rounded-full px-4 py-2 font-mono text-xs text-fg-muted">
+                D{index + 1} / {label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <TesseractAnimation isAnimating={isAnimating} playCount={playCount} />
       </div>
 
       {!challenge && !isAnimating && (
-        <Button
-          onClick={handleGenerateChallenge}
-          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-16 py-5 text-xl font-bold font-nohemi shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl border-2 border-red-400/30"
-        >
-          🎲 Generate My Challenge
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            onClick={handleGenerateChallenge}
+            className="h-12 rounded-full bg-gold px-8 font-bold text-surface-0 shadow-[0_0_26px_rgba(201,162,39,0.2)] transition-all hover:bg-gold-light"
+          >
+            <Sparkles className="size-4" />
+            Spin The Tesseract
+          </Button>
+        </div>
       )}
 
       {challenge && !isAnimating && (
-        <ChallengeResults 
-          challenge={challenge} 
+        <ChallengeResults
+          challenge={challenge}
           onNewChallenge={handleGenerateChallenge}
           playCount={playCount}
           userEmail={userEmail}

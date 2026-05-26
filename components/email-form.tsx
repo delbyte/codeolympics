@@ -4,11 +4,12 @@ import type React from "react"
 
 import { useState } from "react"
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore"
+import { ArrowRight, Loader2 } from "lucide-react"
 import { db } from "@/lib/firebase"
+import type { Challenge } from "@/lib/challenge-data"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { ChallengeDimensionCard } from "@/components/challenge-dimension-card"
 
 interface EmailFormProps {
   onEmailSubmitted: (email: string, discordUsername: string) => void
@@ -19,155 +20,145 @@ export function EmailForm({ onEmailSubmitted }: EmailFormProps) {
   const [discordUsername, setDiscordUsername] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const [acceptedCombo, setAcceptedCombo] = useState<any>(null)
+  const [acceptedCombo, setAcceptedCombo] = useState<Partial<Challenge> | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
     setIsLoading(true)
     setError("")
-    setAcceptedCombo(null) // Reset accepted combo on new submission
+    setAcceptedCombo(null)
 
     try {
       if (!db) {
-        setError("Firebase is not configured. Please check your environment variables.")
+        setError("Firebase is not configured. Add the existing project keys to the environment.")
         setIsLoading(false)
         return
       }
 
-      // FIREBASE_COMM: Check if email already exists in Firestore
-      const q = query(collection(db, "participants"), where("email", "==", email))
-      const querySnapshot = await getDocs(q)
+      const participantsQuery = query(collection(db, "participants"), where("email", "==", email.trim()))
+      const querySnapshot = await getDocs(participantsQuery)
 
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data()
-        const combo = userData.acceptedCombo
-        
-        setAcceptedCombo(combo)
-        setError("You've already played the game! Each user can only play once!")
+
+        setAcceptedCombo(userData.acceptedCombo ?? null)
+        setError("This email is already registered for the challenge.")
         setIsLoading(false)
         return
       }
 
-      // FIREBASE_COMM: Add new email to Firestore
       await addDoc(collection(db, "participants"), {
-        email,
-        discordUsername,
+        email: email.trim(),
+        discordUsername: discordUsername.trim(),
         timestamp: new Date(),
         playCount: 0,
         acceptedCombo: null,
+        language: null,
         hasPlayed: false,
       })
 
-      // Keep loading state active during redirect
-      onEmailSubmitted(email, discordUsername)
-      // Don't set isLoading to false here - let it stay true during redirect
+      onEmailSubmitted(email.trim(), discordUsername.trim())
     } catch (err) {
-      console.error("Error saving email:", err)
+      console.error("Error saving participant:", err)
       setError("Something went wrong. Please try again.")
-      setIsLoading(false) // Only reset loading on error
+      setIsLoading(false)
     }
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto border-2 border-gray-200 bg-white shadow-2xl rounded-xl">
-      <CardHeader className="text-center pb-6">
-        <CardTitle className="text-3xl font-bold text-black font-nohemi mb-2">Join the Challenge</CardTitle>
-        <CardDescription className="text-gray-600 font-nohemi text-base leading-relaxed">
-          Enter your email and Discord username to get your unique coding challenge
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="px-8 pb-8">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full border-2 border-gray-300 bg-white text-black placeholder:text-gray-500 focus:border-red-400 focus:bg-gray-50 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
-          />
-          <Input
-            type="text"
-            placeholder="Discord Username"
-            value={discordUsername}
-            onChange={(e) => setDiscordUsername(e.target.value)}
-            required
-            className="w-full border-2 border-gray-300 bg-white text-black placeholder:text-gray-500 focus:border-red-400 focus:bg-gray-50 font-nohemi py-3 px-4 rounded-lg transition-all duration-200"
-          />
-          {error && <p className="text-red-400 text-sm font-nohemi bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
-          
-          {acceptedCombo && (
-            <div className="space-y-4">
-              <p className="text-sm font-nohemi text-gray-600 text-center">Your previously accepted challenge:</p>
-              
-              <div className="grid grid-cols-1 gap-3">
-                {/* Core Constraint */}
-                <Card className="border-2 border-red-200 bg-white shadow-lg rounded-lg">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-nohemi text-red-600">Core Constraint</CardTitle>
-                      <Badge className="bg-red-100 text-red-800 border border-red-200 font-nohemi text-xs">
-                        Dimension 1
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-xs text-gray-700 font-nohemi">{acceptedCombo.constraint}</p>
-                  </CardContent>
-                </Card>
+    <div className="glass-card-featured w-full max-w-md rounded-lg p-6">
+      <div className="mb-6">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold">Challenge generator</p>
+        <h2 className="mt-3 font-display text-2xl font-semibold text-fg">Enter the arena</h2>
+        <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+          Register once, spin up to three times, then lock in your 4D challenge.
+        </p>
+      </div>
 
-                {/* Line Budget */}
-                <Card className="border-2 border-blue-200 bg-white shadow-lg rounded-lg">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-nohemi text-blue-600">Line Budget</CardTitle>
-                      <Badge className="bg-blue-100 text-blue-800 border border-blue-200 font-nohemi text-xs">
-                        Dimension 2
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-xs text-gray-700 font-nohemi">{acceptedCombo.budget}</p>
-                  </CardContent>
-                </Card>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+          className="h-12 rounded-lg border-white/10 bg-white/[0.03] px-4 text-fg placeholder:text-fg-muted focus-visible:border-gold/60 focus-visible:ring-gold/20"
+        />
+        <Input
+          type="text"
+          placeholder="Discord username"
+          value={discordUsername}
+          onChange={(event) => setDiscordUsername(event.target.value)}
+          required
+          className="h-12 rounded-lg border-white/10 bg-white/[0.03] px-4 text-fg placeholder:text-fg-muted focus-visible:border-gold/60 focus-visible:ring-gold/20"
+        />
 
-                {/* Project Domain */}
-                <Card className="border-2 border-green-200 bg-white shadow-lg rounded-lg">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-nohemi text-green-600">Project Domain</CardTitle>
-                      <Badge className="bg-green-100 text-green-800 border border-green-200 font-nohemi text-xs">
-                        Dimension 3
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-xs text-gray-700 font-nohemi">{acceptedCombo.domain}</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )}
-          <Button
-            type="submit"
-            className={`w-full font-bold py-4 text-lg font-nohemi shadow-xl rounded-lg border border-red-400/30 transition-all duration-200 ${
-              isLoading 
-                ? "bg-gray-400 cursor-not-allowed" 
-                : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white transform hover:scale-105"
-            }`}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Processing...</span>
-              </div>
-            ) : (
-              "Get My Challenge"
+        {error && (
+          <div className="rounded-lg border border-danger/30 bg-danger/10 p-3 text-sm text-[#ffb4bf]">
+            {error}
+          </div>
+        )}
+
+        {acceptedCombo?.constraint && acceptedCombo.budget && acceptedCombo.domain && (
+          <div className="space-y-3 pt-2">
+            <p className="font-mono text-xs uppercase tracking-[0.16em] text-fg-muted">
+              Previously accepted
+            </p>
+            <ChallengeDimensionCard
+              compact
+              dimension={1}
+              label="Core Constraint"
+              tagline="What you cannot use"
+              value={acceptedCombo.constraint}
+              accent="blue"
+            />
+            <ChallengeDimensionCard
+              compact
+              dimension={2}
+              label="Line Budget"
+              tagline="How much you can write"
+              value={acceptedCombo.budget}
+              accent="gold"
+            />
+            <ChallengeDimensionCard
+              compact
+              dimension={3}
+              label="Project Domain"
+              tagline="What you build"
+              value={acceptedCombo.domain}
+              accent="green"
+            />
+            {acceptedCombo.language && (
+              <ChallengeDimensionCard
+                compact
+                dimension={4}
+                label="Language"
+                tagline="What you write it in"
+                value={acceptedCombo.language}
+                accent="red"
+              />
             )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="h-12 w-full rounded-full bg-gold font-bold text-surface-0 shadow-[0_0_24px_rgba(201,162,39,0.18)] transition-all hover:bg-gold-light"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Processing
+            </>
+          ) : (
+            <>
+              Generate My Challenge
+              <ArrowRight className="size-4" />
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
   )
 }

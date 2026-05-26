@@ -1,8 +1,7 @@
-// FIREBASE_COMM: Initialize Firebase with your config
 import { initializeApp } from "firebase/app"
 import { getFirestore, collection, query, where, getDocs, updateDoc, increment } from "firebase/firestore"
+import type { Challenge } from "@/lib/challenge-data"
 
-// FIREBASE_COMM: Replace with your Firebase config from project settings
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -17,9 +16,7 @@ let db: any = null
 
 if (firebaseConfig.apiKey) {
   try {
-    // FIREBASE_COMM: Initialize Firebase app
     app = initializeApp(firebaseConfig)
-    // FIREBASE_COMM: Initialize Firestore
     db = getFirestore(app)
   } catch (error) {
     console.error("Firebase initialization error:", error)
@@ -28,12 +25,10 @@ if (firebaseConfig.apiKey) {
 
 export { db }
 
-// Helper functions for user data management
 export async function incrementPlayCount(userEmail: string) {
   if (!db) return
   
   try {
-    // Find user document by email and increment playCount
     const q = query(collection(db, "participants"), where("email", "==", userEmail))
     const querySnapshot = await getDocs(q)
     
@@ -65,7 +60,7 @@ export async function getUserData(userEmail: string) {
   }
 }
 
-export async function saveAcceptedCombo(userEmail: string, combo: any) {
+export async function saveAcceptedCombo(userEmail: string, combo: Challenge) {
   if (!db) return
   
   try {
@@ -76,6 +71,7 @@ export async function saveAcceptedCombo(userEmail: string, combo: any) {
       const userDoc = querySnapshot.docs[0]
       await updateDoc(userDoc.ref, {
         acceptedCombo: combo,
+        language: combo.language,
         hasPlayed: true
       })
     }

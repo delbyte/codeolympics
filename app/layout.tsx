@@ -5,9 +5,8 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Code Olympics - Challenge Generator",
-  description: "Get your unique coding challenge for the Code Olympics",
-  generator: "v0.app",
+  title: "Code Olympics 2026 - 4D Challenge Generator",
+  description: "Generate your 4D Code Olympics challenge with constraint, budget, domain, and language.",
 }
 
 export default function RootLayout({
@@ -18,7 +17,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* FIREBASE_COMM: Add custom fonts - you may need to host these fonts or use alternatives */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
