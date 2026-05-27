@@ -11,20 +11,6 @@ export function SiteHeader() {
             CODE<span className="text-gold">&nbsp;OLYMPICS</span>
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex" aria-label="Challenge navigation">
-            <Link href="/" className="text-sm text-fg-muted transition-colors hover:text-gold">
-              Generator
-            </Link>
-            <a
-              href="https://discord.com/invite/xfYPDZYqeh"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-fg-muted transition-colors hover:text-gold"
-            >
-              Discord
-            </a>
-          </nav>
-
           <a
             href="https://discord.com/invite/xfYPDZYqeh"
             target="_blank"

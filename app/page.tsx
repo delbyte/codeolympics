@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { EmailForm } from "@/components/email-form"
 import { MobileLockout } from "@/components/mobile-lockout"
@@ -59,8 +60,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="container flex justify-center pb-20">
+      <section className="container flex flex-col items-center gap-5 pb-20">
         <EmailForm onEmailSubmitted={handleEmailSubmitted} />
+        <Link
+          href="/lookup"
+          className="glass-btn rounded-full px-6 py-3 text-sm font-semibold text-fg transition-all hover:text-gold"
+        >
+          Check Accepted Combination
+        </Link>
       </section>
     </main>
   )

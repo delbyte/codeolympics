@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Sparkles } from "lucide-react"
 import { TesseractAnimation } from "./tesseract-animation"
 import { ChallengeResults } from "./challenge-results"
@@ -17,26 +17,38 @@ export function ChallengeVisualizer({ userEmail, discordUsername }: ChallengeVis
   const [isAnimating, setIsAnimating] = useState(false)
   const [challenge, setChallenge] = useState<Challenge | null>(null)
   const [playCount, setPlayCount] = useState(0)
+  const playCountRef = useRef(0)
+  const isGeneratingRef = useRef(false)
   const displayName = discordUsername || userEmail
 
   useEffect(() => {
     const loadUserData = async () => {
       const data = await getUserData(userEmail)
-      setPlayCount(data?.playCount || 0)
+      const nextPlayCount = data?.playCount || 0
+      playCountRef.current = nextPlayCount
+      setPlayCount(nextPlayCount)
     }
 
     loadUserData()
   }, [userEmail])
 
   const handleGenerateChallenge = async () => {
-    await incrementPlayCount(userEmail)
-    setPlayCount((previous) => previous + 1)
+    if (isGeneratingRef.current || playCountRef.current >= 3) return
+
+    isGeneratingRef.current = true
+    const nextPlayCount = playCountRef.current + 1
+
     setIsAnimating(true)
     setChallenge(null)
+
+    await incrementPlayCount(userEmail)
+    playCountRef.current = nextPlayCount
+    setPlayCount(nextPlayCount)
 
     window.setTimeout(() => {
       setChallenge(generateRandomChallenge())
       setIsAnimating(false)
+      isGeneratingRef.current = false
     }, 3000)
   }
 

@@ -397,9 +397,9 @@ export function TesseractAnimation({ isAnimating, playCount }: TesseractAnimatio
   return (
     <div
       ref={stageRef}
-      className="relative h-[min(62vh,560px)] min-h-[360px] w-full cursor-grab overflow-hidden rounded-lg border border-white/10 bg-surface-0/70 shadow-2xl active:cursor-grabbing"
+      className="relative h-[min(62vh,560px)] min-h-[360px] w-full cursor-grab overflow-visible active:cursor-grabbing"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(201,162,39,0.16),transparent_42%)]" />
+      <div className="pointer-events-none absolute inset-[-12%] bg-[radial-gradient(circle_at_50%_45%,rgba(201,162,39,0.16),transparent_48%)]" />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       {isAnimating && (

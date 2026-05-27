@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { CheckCircle2, Clipboard, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ChallengeDimensionCard } from "@/components/challenge-dimension-card"
@@ -16,13 +17,15 @@ interface ChallengeResultsProps {
 }
 
 export function ChallengeResults({ challenge, onNewChallenge, playCount, userEmail }: ChallengeResultsProps) {
+  const router = useRouter()
   const [showAcceptedModal, setShowAcceptedModal] = useState(false)
   const [copyLabel, setCopyLabel] = useState("Copy Details")
   const constraint = parseChallengePart(challenge.constraint)
   const budget = parseChallengePart(challenge.budget)
   const domain = parseChallengePart(challenge.domain)
   const language = parseChallengePart(challenge.language)
-  const isLastAttempt = playCount >= 3
+  const rerollsLeft = Math.max(0, 3 - playCount)
+  const isLastAttempt = rerollsLeft === 0
 
   const handleAcceptCombo = async () => {
     await saveAcceptedCombo(userEmail, challenge)
@@ -104,7 +107,7 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
               className="h-11 flex-1 rounded-full border-white/10 bg-white/[0.03] text-fg hover:bg-white/[0.07] hover:text-fg"
             >
               <RotateCcw className="size-4" />
-              Try Again ({3 - playCount} left)
+              Try Again ({rerollsLeft} left)
             </Button>
           )}
 
@@ -141,7 +144,10 @@ export function ChallengeResults({ challenge, onNewChallenge, playCount, userEma
       <ChallengeAccepted
         isVisible={showAcceptedModal}
         challenge={challenge}
-        onComplete={() => setShowAcceptedModal(false)}
+        onComplete={() => {
+          setShowAcceptedModal(false)
+          router.push("/")
+        }}
       />
     </div>
   )

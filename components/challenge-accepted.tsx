@@ -32,8 +32,8 @@ export function ChallengeAccepted({ isVisible, challenge, onComplete }: Challeng
 
       if (elapsed >= duration) {
         window.clearInterval(interval)
-        onComplete()
         window.open("https://discord.com/invite/xfYPDZYqeh", "_blank")
+        onComplete()
       }
     }, 100)
 
