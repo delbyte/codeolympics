@@ -20,7 +20,7 @@ export default function HomePage() {
       {isMobile && <MobileLockout />}
       <SiteHeader />
 
-      <section className="container relative grid min-h-[calc(100vh-88px)] items-center gap-10 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:py-16">
+      <section className="container relative grid items-center gap-10 pt-12 pb-10 lg:grid-cols-[0.95fr_1.05fr] lg:pt-16 lg:pb-12">
         <div className="relative z-10">
           <p className="mb-5 font-mono text-xs text-fg-muted/70 sm:text-sm">
             <span className="text-gold/50">//</span> Code Olympics 2026
@@ -54,10 +54,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col gap-6">
+        <div className="relative z-10">
           <TesseractAnimation isAnimating={false} playCount={0} />
-          <EmailForm onEmailSubmitted={handleEmailSubmitted} />
         </div>
+      </section>
+
+      <section className="container flex justify-center pb-20">
+        <EmailForm onEmailSubmitted={handleEmailSubmitted} />
       </section>
     </main>
   )
