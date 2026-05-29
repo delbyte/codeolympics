@@ -26,7 +26,7 @@ export default function ChallengePage() {
 
   if (!userEmail) {
     return (
-      <main className="min-h-screen bg-surface-1 text-fg">
+      <main className="min-h-screen text-fg">
         <SiteHeader />
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="glass-pill rounded-full px-5 py-2 font-mono text-sm text-fg-muted">Loading generator</div>
@@ -36,7 +36,7 @@ export default function ChallengePage() {
   }
 
   return (
-    <main className="min-h-screen bg-surface-1 text-fg">
+    <main className="min-h-screen text-fg">
       <SiteHeader />
       <ChallengeVisualizer userEmail={userEmail} discordUsername={discordUsername} />
     </main>

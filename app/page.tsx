@@ -17,7 +17,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-surface-1 text-fg">
+    <main className="min-h-screen overflow-hidden text-fg">
       {isMobile && <MobileLockout />}
       <SiteHeader />
 

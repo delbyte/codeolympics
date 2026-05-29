@@ -39,7 +39,7 @@ export default function LookupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-surface-1 text-fg">
+    <main className="min-h-screen text-fg">
       <SiteHeader />
 
       <section className="container py-14">
